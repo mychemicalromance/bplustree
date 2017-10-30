@@ -1,5 +1,7 @@
 package test;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.UUID;
 
@@ -13,6 +15,7 @@ public class TestArrayListSorted {
 	}
 }
 
+//use linkedlist
 class SortedLinkedList{
 	private LinkedList<String> inner;
 	public SortedLinkedList(){
@@ -32,4 +35,15 @@ class SortedLinkedList{
 	public String toString() {
 		return "SortedLinkedList [inner=" + inner + "]";
 	}
+}
+
+
+class SortedArrayList<T> extends ArrayList<T> {
+    @SuppressWarnings("unchecked")
+    public void insertSorted(T value) {
+        add(value);
+        Comparable<T> cmp = (Comparable<T>) value;
+        for (int i = size()-1; i > 0 && cmp.compareTo(get(i-1)) < 0; i--)
+            Collections.swap(this, i, i-1);
+    }
 }
