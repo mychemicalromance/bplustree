@@ -44,6 +44,9 @@ public class Node {
 		this.children = children;
 	}
 	
-	
+	public Node(){
+		this.nodeData = new SortedArrayList<>();
+		this.children = new ArrayList<>();
+	}
 	
 }

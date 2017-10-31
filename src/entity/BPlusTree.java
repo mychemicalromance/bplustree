@@ -2,6 +2,9 @@ package entity;
 
 import tools.SortedArrayList;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BPlusTree {
 	//树的度
 	private int degree;
@@ -36,7 +39,7 @@ public class BPlusTree {
 				node1.setRoot(false);
 				node1.setNextLeaf(node2);
 				SortedArrayList<String> data1 = node1.getNodeData().getBelowMiddle(middle);
-				SortedArrayList<String> data2 = node2.getNodeData().getOverMiddle(middle);
+				SortedArrayList<String> data2 = node1.getNodeData().getOverMiddle(middle);
 				node1.setNodeData(data1);
 				node2.setNodeData(data2);
 				
@@ -46,8 +49,6 @@ public class BPlusTree {
 				root.getChildren().add(node1);
 				root.getChildren().add(node2);
 				root.getNodeData().insertSorted(middle);
-			}else{
-				root.getNodeData().insertSorted(s);
 			}
 		}else{
 			System.out.println("value to big!");
@@ -69,9 +70,36 @@ public class BPlusTree {
 		}else if(onlyOneRoot()){
 			return "all data in root:"+root.getNodeData().toString();
 		}else{
-			//有多个节点，分别打印出索引节点和数据节点
-			
+			//有多个节点，分别打印出索引节点和数据节点，广度优先遍历
+			StringBuilder sb = new StringBuilder("index data:");
+			List<Node> ff = new ArrayList<>();
+			ff.add(this.root);
+			while(true){
+				List<Node> list = this.printNode(ff,sb);
+				if(list==null || list.size()==0){
+					break;
+				}else{
+					ff=list;
+				}
+			}
+			return sb.toString();
 		}
+	}
+
+	private List<Node> printNode(List<Node> nodes,StringBuilder sb){
+		sb.append(System.lineSeparator());
+		if(nodes.get(0).isLeaf()){
+			sb.append("real data:");
+			sb.append(System.lineSeparator());
+		}
+		List<Node> result = new ArrayList<>();
+		for(Node node:nodes){
+			sb.append(node.getNodeData().toString()).append(";");
+			if(node.getChildren()!=null && node.getChildren().size()>0){
+				result.addAll(node.getChildren());
+			}
+		}
+		return result;
 	}
 	
 	
