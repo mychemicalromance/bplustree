@@ -9,8 +9,8 @@ import java.util.UUID;
  */
 public class Test {
     public static void main(String[] args) {
-        BPlusTree bptree = new BPlusTree(7);
-        for(int i=0;i<7;i++){
+        BPlusTree bptree = new BPlusTree(4);
+        for(int i=0;i<5;i++){
             bptree.add(UUID.randomUUID().toString());
         }
         System.out.println(bptree);

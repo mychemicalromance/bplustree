@@ -48,6 +48,8 @@ public class BPlusTree {
 				this.root = newRoot;
 				root.getChildren().add(node1);
 				root.getChildren().add(node2);
+				node1.setParent(root);
+				node2.setParent(root);
 				root.getNodeData().insertSorted(middle);
 			}
 		}else{

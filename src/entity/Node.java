@@ -12,6 +12,7 @@ public class Node {
 	private SortedArrayList<String> nodeData;
 	private Node nextLeaf;
 	private ArrayList<Node> children;
+	private Node parent;
 	
 	public boolean isLeaf() {
 		return leaf;
@@ -43,7 +44,15 @@ public class Node {
 	public void setChildren(ArrayList<Node> children) {
 		this.children = children;
 	}
-	
+
+	public Node getParent() {
+		return parent;
+	}
+
+	public void setParent(Node parent) {
+		this.parent = parent;
+	}
+
 	public Node(){
 		this.nodeData = new SortedArrayList<>();
 		this.children = new ArrayList<>();
