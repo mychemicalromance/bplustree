@@ -4,6 +4,7 @@ import tools.SortedArrayList;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class BPlusTree {
 	//树的度
@@ -89,7 +90,42 @@ public class BPlusTree {
 				currentNode = currentNode.getChildren().get(choseChild);
 			}
 			System.out.println("chose leaf:"+currentNode.getNodeData());
+			//开始进行insert和判断
+			while(true){
+				Map<String,Object> result = doInsert(currentNode, s);
+				if(result == null){
+					break;
+				}else{
+					currentNode = (Node) result.get("currentNode");
+					s = (String) result.get("s");
+				}
+			}
+			
+			
 		}
+	}
+	
+	private Map<String,Object> doInsert(Node node,String s){
+		//首先进行数据插入
+		node.getNodeData().insertSorted(s);
+		if(node.getNodeData().size() == degree){
+			//该节点已满，开始分裂，并且将中间值传递给父节点，然后再次执行父节点的数据插入
+			String middle = node.getNodeData().getMiddle();
+			if(node.isLeaf()){
+				Node parent = node.getParent();
+				Node newNode = new Node();
+				newNode.setLeaf(node.isLeaf());
+				newNode.setParent(parent);
+				SortedArrayList<String> dataLeft = node.getNodeData().getBelowMiddle(middle);
+				SortedArrayList<String> dataRight = node.getNodeData().getOverMiddle(middle);
+				newNode.setNodeData(dataRight);
+				node.setNodeData(dataLeft);
+				
+			}
+			
+			
+		}
+		return null;
 	}
 	
 	public boolean emptyTree(){
