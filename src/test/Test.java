@@ -13,7 +13,7 @@ public class Test {
         BPlusTree bptree = new BPlusTree(4);
         ArrayList<String> list = new ArrayList<>();
         
-        for(int i=0;i<20;i++){
+        for(int i=0;i<12;i++){
         	String key = UUID.randomUUID().toString().substring(3, 10).replaceAll("-", "");
         	if(list.contains(key)){
         		System.out.println("again=============================");

@@ -120,6 +120,29 @@ public class BPlusTree {
 				pNode.getNodeData().insertSorted(middle);
 				return pNode;
 			}else if(cNode.isRoot()){
+				//根节点分裂，树高度增加一
+				String middle = cNode.getNodeData().getMiddle();
+				SortedArrayList<String> half1=cNode.getNodeData().getBelowMiddle(middle);
+				SortedArrayList<String> half2=cNode.getNodeData().getOverMiddleWithOutMiddle(middle);
+				Node newRoot = new Node();
+				newRoot.setRoot(true);
+				this.root = newRoot;
+				newRoot.getNodeData().insertSorted(middle);
+				
+				Node newNode = new Node();
+				newNode.setNodeData(half2);
+				newNode.setParent(newRoot);
+				cNode.setNodeData(half1);
+				cNode.setRoot(false);
+				cNode.setParent(newRoot);
+				
+				newRoot.getChildren().add(cNode);
+				newRoot.getChildren().add(newNode);
+				//瓜分孩子，返回null即可
+				int i = cNode.getNodeData().size();
+				int size = cNode.getChildren().size();
+				newNode.setChildren(cNode.getChildren().subList2(i+1, size));
+				cNode.setChildren(cNode.getChildren().subList2(0, i+1));
 				return null;
 			}else{
 				return null;
