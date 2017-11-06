@@ -96,8 +96,6 @@ public class BPlusTree {
 					break;
 				}
 			}
-			
-			
 		}
 	}
 	
@@ -145,7 +143,21 @@ public class BPlusTree {
 				cNode.setChildren(cNode.getChildren().subList2(0, i+1));
 				return null;
 			}else{
-				return null;
+				//非叶非根，分裂，将中值插入父节点，然后平分孩子
+				String middle = cNode.getNodeData().getMiddle();
+				SortedArrayList<String> half1=cNode.getNodeData().getBelowMiddle(middle);
+				SortedArrayList<String> half2=cNode.getNodeData().getOverMiddleWithOutMiddle(middle);
+				Node pNode = cNode.getParent();
+				Node newNode = new Node();
+				newNode.setNodeData(half2);
+				cNode.setNodeData(half1);
+				pNode.getNodeData().insertSorted(middle);
+				pNode.getChildren().insertSorted(newNode);
+				int i = cNode.getNodeData().size();
+				int size = cNode.getChildren().size();
+				newNode.setChildren(cNode.getChildren().subList2(i+1,size));
+				cNode.setChildren(cNode.getChildren().subList2(0,i+1));
+				return pNode;
 			}
 		}else{
 			return null;			
@@ -162,12 +174,7 @@ public class BPlusTree {
 	}
 	
 	
-	
-	
-	
-	
-	
-	
+
 	
 	@Override
 	public String toString() {

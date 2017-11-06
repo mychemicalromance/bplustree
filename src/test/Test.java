@@ -10,10 +10,10 @@ import entity.BPlusTree;
  */
 public class Test {
     public static void main(String[] args) {
-        BPlusTree bptree = new BPlusTree(4);
+        BPlusTree bptree = new BPlusTree(5);
         ArrayList<String> list = new ArrayList<>();
         
-        for(int i=0;i<12;i++){
+        for(int i=0;i<22;i++){
         	String key = UUID.randomUUID().toString().substring(3, 10).replaceAll("-", "");
         	if(list.contains(key)){
         		System.out.println("again=============================");
