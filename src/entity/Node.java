@@ -1,17 +1,15 @@
 package entity;
 
-import java.util.ArrayList;
-
 import tools.SortedArrayList;
 
 //树中的节点，分为叶子节点和索引节点，索引节点包含根节点和非根索引节点
 //树的度最小为3也就是说树的节点最多有两个值，超过两个值将会分裂
-public class Node {
+public class Node implements Comparable<Node>{
 	private boolean leaf;
 	private boolean root;
 	private SortedArrayList<String> nodeData;
+	private SortedArrayList<Node> children;
 	private Node nextLeaf;
-	private ArrayList<Node> children;
 	private Node parent;
 	
 	public boolean isLeaf() {
@@ -38,10 +36,10 @@ public class Node {
 	public void setNextLeaf(Node nextLeaf) {
 		this.nextLeaf = nextLeaf;
 	}
-	public ArrayList<Node> getChildren() {
+	public SortedArrayList<Node> getChildren() {
 		return children;
 	}
-	public void setChildren(ArrayList<Node> children) {
+	public void setChildren(SortedArrayList<Node> children) {
 		this.children = children;
 	}
 
@@ -55,7 +53,12 @@ public class Node {
 
 	public Node(){
 		this.nodeData = new SortedArrayList<>();
-		this.children = new ArrayList<>();
+		this.children = new SortedArrayList<>();
+	}
+	
+	@Override
+	public int compareTo(Node o) {
+		return this.nodeData.get(0).compareTo(o.nodeData.get(0));
 	}
 	
 }

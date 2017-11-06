@@ -11,8 +11,6 @@ public class BPlusTree {
 	private int degree;
 	private Node root;
 	private Node headLeaf;
-	
-	
 	public BPlusTree(int degree){
 		this.degree = degree;
 	}
@@ -47,8 +45,8 @@ public class BPlusTree {
 				Node newRoot = new Node();
 				newRoot.setRoot(true);
 				this.root = newRoot;
-				root.getChildren().add(node1);
-				root.getChildren().add(node2);
+				root.getChildren().insertSorted(node1);
+				root.getChildren().insertSorted(node2);
 				node1.setParent(root);
 				node2.setParent(root);
 				root.getNodeData().insertSorted(middle);
@@ -90,14 +88,12 @@ public class BPlusTree {
 				currentNode = currentNode.getChildren().get(choseChild);
 			}
 			System.out.println("chose leaf:"+currentNode.getNodeData());
-			//开始进行insert和判断
+			currentNode.getNodeData().insertSorted(s);
+			//开始进行判断是否应该分裂，如果分裂，则将中值插入父节点之后，完成分裂继续判断父节点
 			while(true){
-				Map<String,Object> result = doInsert(currentNode, s);
-				if(result == null){
+				currentNode = afterInsert(currentNode);
+				if(currentNode == null){
 					break;
-				}else{
-					currentNode = (Node) result.get("currentNode");
-					s = (String) result.get("s");
 				}
 			}
 			
@@ -105,28 +101,34 @@ public class BPlusTree {
 		}
 	}
 	
-	private Map<String,Object> doInsert(Node node,String s){
-		//首先进行数据插入
-		node.getNodeData().insertSorted(s);
-		if(node.getNodeData().size() == degree){
-			//该节点已满，开始分裂，并且将中间值传递给父节点，然后再次执行父节点的数据插入
-			String middle = node.getNodeData().getMiddle();
-			if(node.isLeaf()){
-				Node parent = node.getParent();
+	private Node afterInsert(Node cNode){
+		if(cNode.getNodeData().size() == degree){
+			//当前节点需要分裂
+			if(cNode.isLeaf()){
+				String middle = cNode.getNodeData().getMiddle();
+				SortedArrayList<String> half1=cNode.getNodeData().getBelowMiddle(middle);
+				SortedArrayList<String> half2=cNode.getNodeData().getOverMiddle(middle);
+				Node pNode=cNode.getParent();
 				Node newNode = new Node();
-				newNode.setLeaf(node.isLeaf());
-				newNode.setParent(parent);
-				SortedArrayList<String> dataLeft = node.getNodeData().getBelowMiddle(middle);
-				SortedArrayList<String> dataRight = node.getNodeData().getOverMiddle(middle);
-				newNode.setNodeData(dataRight);
-				node.setNodeData(dataLeft);
-				
+				newNode.setLeaf(cNode.isLeaf());
+				newNode.setNodeData(half2);
+				newNode.setParent(pNode);
+				newNode.setNextLeaf(cNode.getNextLeaf());
+				cNode.setNodeData(half1);
+				cNode.setNextLeaf(newNode);
+				pNode.getChildren().insertSorted(newNode);
+				pNode.getNodeData().insertSorted(middle);
+				return pNode;
+			}else if(cNode.isRoot()){
+				return null;
+			}else{
+				return null;
 			}
-			
-			
+		}else{
+			return null;			
 		}
-		return null;
 	}
+	
 	
 	public boolean emptyTree(){
 		return root==null;
@@ -135,7 +137,15 @@ public class BPlusTree {
 	public boolean onlyOneRoot(){
 		return this.root==this.headLeaf;
 	}
-
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	@Override
 	public String toString() {
 		if(emptyTree()){
@@ -158,7 +168,6 @@ public class BPlusTree {
 			return sb.toString();
 		}
 	}
-
 	private List<Node> printNode(List<Node> nodes,StringBuilder sb){
 		sb.append(System.lineSeparator());
 		if(nodes.get(0).isLeaf()){
@@ -174,7 +183,4 @@ public class BPlusTree {
 		}
 		return result;
 	}
-	
-	
-	
 }
