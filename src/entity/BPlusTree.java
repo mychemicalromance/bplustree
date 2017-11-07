@@ -1,16 +1,25 @@
 package entity;
 
-import tools.SortedArrayList;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+
+import tools.SortedArrayList;
 
 public class BPlusTree {
 	//树的度
 	private int degree;
 	private Node root;
 	private Node headLeaf;
+	
+	
+	public Node getHeadLeaf() {
+		return headLeaf;
+	}
+
+	public void setHeadLeaf(Node headLeaf) {
+		this.headLeaf = headLeaf;
+	}
+
 	public BPlusTree(int degree){
 		this.degree = degree;
 	}
@@ -50,6 +59,7 @@ public class BPlusTree {
 				node1.setParent(root);
 				node2.setParent(root);
 				root.getNodeData().insertSorted(middle);
+				this.headLeaf=node1;
 			}
 		}else{
 			//这种情况下树至少有三个节点，此种情况下要考虑叶子分裂的问题，并且有可能导致根分裂，
@@ -57,6 +67,10 @@ public class BPlusTree {
 			//首先找到需要将值插入的叶子节点，插入之后判断是否需要分裂，如果需要分裂，分裂完成后再将中间值插入父节点，以此类推
 			Node currentNode = root;
 			while(true){
+				if(currentNode.getNodeData().contains(s)){
+					System.out.println("already in tree!");
+					return;
+				}
 				if(currentNode.isLeaf()){
 					break;
 				}
@@ -87,7 +101,7 @@ public class BPlusTree {
 				}
 				currentNode = currentNode.getChildren().get(choseChild);
 			}
-			System.out.println("chose leaf:"+currentNode.getNodeData());
+			//System.out.println("chose leaf:"+currentNode.getNodeData());
 			currentNode.getNodeData().insertSorted(s);
 			//开始进行判断是否应该分裂，如果分裂，则将中值插入父节点之后，完成分裂继续判断父节点
 			while(true){
@@ -173,8 +187,6 @@ public class BPlusTree {
 		return this.root==this.headLeaf;
 	}
 	
-	
-
 	
 	@Override
 	public String toString() {
